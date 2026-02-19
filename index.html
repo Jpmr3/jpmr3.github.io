@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora Global de Salarios 2025 | 50 Países</title>
+  <meta name="description" content="Calcula tu salario neto en 50 países. Compara impuestos y poder adquisitivo real. Gratis.">
+  <meta property="og:title" content="¿Cuánto ganarías en otro país? Descúbrelo gratis"/>
+  <meta property="og:description" content="Calculadora de salarios en 50 países con datos reales 2025"/>
+  <meta property="og:url" content="https://jpmr3.github.io"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --secondary: #34a853;
+      --bg: #f0f2f5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: var(--bg); padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    h1 { color: var(--primary); text-align: center; font-size: 28px; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 25px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+    input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; }
+    input:focus, select:focus { border-color: var(--primary); outline: none; }
+    .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
+    .btn-calc:hover { background: #0d47a1; }
+    .results { display: none; }
+    .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+    .country-card { background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary); }
+    .country-card h3 { font-size: 15px; color: #333; }
+    .neto { font-size: 20px; color: var(--secondary); font-weight: bold; margin: 5px 0; }
+    .detalles { font-size: 12px; color: #666; }
+    .top-badge { background: #ff6f00; color: white; padding: 2px 7px; border-radius: 4px; font-size: 11px; }
+    .share-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 15px; }
+    .share-btn { padding: 10px 20px; border-radius: 25px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; border: none; }
+    .twitter { background: #1da1f2; }
+    .linkedin { background: #0077b5; }
+    .whatsapp { background: #25d366; }
+    .reddit { background: #ff4500; }
+    .telegram { background: #0088cc; }
+    .donate-section { text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; color: white; margin-top: 20px; }
+    .donate-btn { display: inline-block; margin-top: 15px; padding: 15px 40px; background: white; color: #764ba2; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px; }
+    .social-links { display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+    .social-link { padding: 10px 20px; border-radius: 25px; text-decoration: none; color: white; font-weight: bold; }
+    .youtube { background: #ff0000; }
+    .instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .lang-switch { text-align: right; margin-bottom: 15px; }
+    .lang-switch a { margin-left: 10px; color: var(--primary); text-decoration: none; font-weight: bold; cursor: pointer; }
+    .chart-container { margin-top: 20px; }
+    .stats { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+    .stat-card { background: #e8f0fe; padding: 15px 25px; border-radius: 10px; text-align: center; }
+    .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
+    .stat-label { font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lang-switch">
+    <a onclick="setLang('es')">🇪🇸 ES</a>
+    <a onclick="setLang('en')">🇬🇧 EN</a>
+    <a onclick="setLang('fr')">🇫🇷 FR</a>
+    <a onclick="setLang('de')">🇩🇪 DE</a>
+    <a onclick="setLang('pt')">🇧🇷 PT</a>
+  </div>
+
+  <div class="card">
+    <h1 id="titulo">💰 Calculadora Global de Salarios 2025</h1>
+    <p class="subtitle" id="subtitulo">Descubre cuánto ganarías realmente en 50 países del mundo</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">50</div>
+        <div class="stat-label">Países</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">8</div>
+        <div class="stat-label">Monedas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Idiomas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Gratis</div>
+      </div>
+    </div>
+
+    <label id="label-salario">💵 Salario Bruto Anual (USD):</label>
+    <input type="number" id="salary" placeholder="ej: 50000" min="1000">
+
+    <label id="label-profesion">💼 Profesión:</label>
+    <select id="profession">
+      <option value="tech">💻 Ingeniero Software</option>
+      <option value="design">🎨 Diseñador UX/UI</option>
+      <option value="marketing">📢 Marketing Digital</option>
+      <option value="teacher">📚 Profesor</option>
+      <option value="nurse">🏥 Enfermero/a</option>
+      <option value="finance">💼 Analista Financiero</option>
+      <option value="freelance">🌐 Freelancer</option>
+      <option value="content">🎬 Content Creator</option>
+    </select>
+
+    <label id="label-moneda">💱 Ver resultados en:</label>
+    <select id="currency">
+      <option value="USD">🇺🇸 USD - Dólar</option>
+      <option value="EUR">🇪🇺 EUR - Euro</option>
+      <option value="GBP">🇬🇧 GBP - Libra</option>
+      <option value="JPY">🇯🇵 JPY - Yen</option>
+      <option value="BRL">🇧🇷 BRL - Real</option>
+      <option value="MXN">🇲🇽 MXN - Peso</option>
+      <option value="CAD">🇨🇦 CAD - Dólar CA</option>
+      <option value="AUD">🇦🇺 AUD - Dólar AU</option>
+    </select>
+
+    <button class="btn-calc" onclick="calcular()" id="btn-calcular">
+      🔍 Calcular Mi Salario en 50 Países
+    </button>
+  </div>
+
+  <div class="results" id="results">
+
+    <div class="card">
+      <h2 id="results-title">📊 Tus Resultados Personalizados</h2>
+      <div class="country-grid" id="country-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>📈 Comparativa Visual</h2>
+      <div class="chart-container">
+        <canvas id="salaryChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <h2>📤 Comparte tu resultado</h2>
+      <p>¿Ganas más o menos que la media? ¡Cuéntaselo a tus amigos!</p>
+      <div class="share-buttons">
+        <button class="share-btn twitter" onclick="share('twitter')">🐦 Twitter</button>
+        <button class="share-btn linkedin" onclick="share('linkedin')">💼 LinkedIn</button>
+        <button class="share-btn whatsapp" onclick="share('whatsapp')">📱 WhatsApp</button>
+        <button class="share-btn reddit" onclick="share('reddit')">🔴 Reddit</button>
+        <button class="share-btn telegram" onclick="share('telegram')">✈️ Telegram</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="donate-section">
+    <h2>☕ ¿Te fue útil?</h2>
+    <p>Esta herramienta es 100% gratuita.<br>Si te ayudó, considera apoyarla:</p>
+    <a href="https://paypal.me/nostrodamus777" target="_blank" class="donate-btn">
+      💙 Donar con PayPal
+    </a>
+    <div class="social-links">
+      <a href="https://www.youtube.com/@momentsofjoyvoyareir" target="_blank" class="social-link youtube">
+        ▶️ YouTube
+      </a>
+      <a href="https://www.instagram.com/comosellamabalacuenta/" target="_blank" class="social-link instagram">
+        📸 Instagram
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const paises = {
+  "🇺🇸 USA": { tax: 0.25, ciudad: "Nueva York" },
+  "🇦🇪 Dubái": { tax: 0.00, ciudad: "Dubái" },
+  "🇨🇭 Suiza": { tax: 0.20, ciudad: "Zúrich" },
+  "🇸🇬 Singapur": { tax: 0.17, ciudad: "Singapur" },
+  "🇩🇪 Alemania": { tax: 0.35, ciudad: "Berlín" },
+  "🇬🇧 UK": { tax: 0.34, ciudad: "Londres" },
+  "🇯🇵 Japón": { tax: 0.30, ciudad: "Tokio" },
+  "🇪🇸 España": { tax: 0.32, ciudad: "Madrid" },
+  "🇨🇦 Canadá": { tax: 0.28, ciudad: "Toronto" },
+  "🇦🇺 Australia": { tax: 0.27, ciudad: "Sídney" },
+  "🇫🇷 Francia": { tax: 0.33, ciudad: "París" },
+  "🇮🇹 Italia": { tax: 0.36, ciudad: "Milán" },
+  "🇳🇱 Holanda": { tax: 0.37, ciudad: "Ámsterdam" },
+  "🇸🇪 Suecia": { tax: 0.40, ciudad: "Estocolmo" },
+  "🇳🇴 Noruega": { tax: 0.38, ciudad: "Oslo" },
+  "🇩🇰 Dinamarca": { tax: 0.42, ciudad: "Copenhague" },
+  "🇧🇷 Brasil": { tax: 0.27, ciudad: "São Paulo" },
+  "🇲🇽 México": { tax: 0.30, ciudad: "CDMX" },
+  "🇦🇷 Argentina": { tax: 0.35, ciudad: "Buenos Aires" },
+  "🇨🇱 Chile": { tax: 0.25, ciudad: "Santiago" },
+  "🇨🇴 Colombia": { tax: 0.33, ciudad: "Bogotá" },
+  "🇵🇪 Perú": { tax: 0.29, ciudad: "Lima" },
+  "🇮🇳 India": { tax: 0.30, ciudad: "Mumbai" },
+  "🇨🇳 China": { tax: 0.25, ciudad: "Shanghái" },
+  "🇰🇷 Corea Sur": { tax: 0.24, ciudad: "Seúl" },
+  "🇵🇹 Portugal": { tax: 0.28, ciudad: "Lisboa" },
+  "🇵🇱 Polonia": { tax: 0.32, ciudad: "Varsovia" },
+  "🇷🇺 Rusia": { tax: 0.13, ciudad: "Moscú" },
+  "🇺🇦 Ucrania": { tax: 0.19, ciudad: "Kiev" },
+  "🇿🇦 Sudáfrica": { tax: 0.30, ciudad: "Johannesburgo" },
+  "🇳🇬 Nigeria": { tax: 0.24, ciudad: "Lagos" },
+  "🇹🇷 Turquía": { tax: 0.27, ciudad: "Estambul" },
+  "🇮🇱 Israel": { tax: 0.31, ciudad: "Tel Aviv" },
+  "🇸🇦 Arabia Saudí": { tax: 0.02, ciudad: "Riad" },
+  "🇹🇭 Tailandia": { tax: 0.20, ciudad: "Bangkok" },
+  "🇻🇳 Vietnam": { tax: 0.20, ciudad: "Ho Chi Minh" },
+  "🇲🇾 Malasia": { tax: 0.21, ciudad: "Kuala Lumpur" },
+  "🇵🇭 Filipinas": { tax: 0.25, ciudad: "Manila" },
+  "🇮🇩 Indonesia": { tax: 0.25, ciudad: "Yakarta" },
+  "🇵🇰 Pakistán": { tax: 0.20, ciudad: "Karachi" },
+  "🇧🇩 Bangladesh": { tax: 0.15, ciudad: "Daca" },
+  "🇪🇬 Egipto": { tax: 0.22, ciudad: "El Cairo" },
+  "🇲🇦 Marruecos": { tax: 0.28, ciudad: "Casablanca" },
+  "🇰🇪 Kenia": { tax: 0.25, ciudad: "Nairobi" },
+  "🇬🇭 Ghana": { tax: 0.25, ciudad: "Acra" },
+  "🇷🇴 Rumanía": { tax: 0.30, ciudad: "Bucarest" },
+  "🇭🇺 Hungría": { tax: 0.33, ciudad: "Budapest" },
+  "🇨🇿 República Checa": { tax: 0.31, ciudad: "Praga" },
+  "🇬🇷 Grecia": { tax: 0.36, ciudad: "Atenas" },
+  "🇳🇿 Nueva Zelanda": { tax: 0.28, ciudad: "Auckland" }
+};
+
+const tasasCambio = {
+  USD: 1.0, EUR: 0.92, GBP: 0.79,
+  JPY: 150.0, BRL: 4.97, MXN: 17.2,
+  CAD: 1.36, AUD: 1.53
+};
+
+let chart = null;
+
+function calcular() {
+  const salary = parseFloat(document.getElementById('salary').value);
+  const currency = document.getElementById('currency').value;
+  if (!salary || salary <= 0) {
+    alert('Por favor ingresa un salario válido');
+    return;
+  }
+  const rate = tasasCambio[currency] || 1.0;
+  const grid = document.getElementById('country-grid');
+  grid.innerHTML = '';
+  const labels = [];
+  const values = [];
+  const colors = [];
+
+  const sorted = Object.entries(paises).sort((a, b) => {
+    return (salary * (1 - a[1].tax)) - (salary * (1 - b[1].tax));
+  }).reverse();
+
+  sorted.forEach(([pais, info], index) => {
+    const netoUSD = salary * (1 - info.tax);
+    const netoFinal = netoUSD * rate;
+    const mensual = netoFinal / 12;
+    const card = document.createElement('div');
+    card.className = 'country-card';
+    card.innerHTML = `
+      <h3>${pais} ${index === 0 ? '<span class="top-badge">🏆 MEJOR</span>' : ''}</h3>
+      <div class="neto">${currency} ${netoFinal.toLocaleString('es-ES', {maximumFractionDigits: 0})}/año</div>
+      <div class="detalles">
+        📅 Mensual: ${currency} ${mensual.toLocaleString('es-ES', {maximumFractionDigits: 0})}<br>
+        🏙️ ${info.ciudad} · 📊 Impuesto: ${(info.tax*100).toFixed(0)}%
+      </div>`;
+    grid.appendChild(card);
+    if (index < 15) {
+      labels.push(pais.split(' ')[1] || pais);
+      values.push(Math.round(netoFinal));
+      colors.push(`hsl(${index * 25}, 70%, 60%)`);
+    }
+  });
+
+  const ctx = document.getElementById('salaryChart').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: `Salario Neto (${currency})`,
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function share(platform) {
+  const url = encodeURIComponent('https://jpmr3.github.io');
+  const text = encodeURIComponent('🌍 ¡Descubrí cuánto ganaría en 50 países! Calcula el tuyo gratis:');
+  const urls = {
+    twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+    whatsapp: `https://wa.me/?text=${text}%20${url}`,
+    reddit: `https://www.reddit.com/submit?url=${url}&title=Calculadora salarios en 50 países`,
+    telegram: `https://t.me/share/url?url=${url}&text=${text}`
+  };
+  window.open(urls[platform], '_blank');
+}
+
+function setLang(lang) {
+  const t = {
+    es: { titulo: "💰 Calculadora Global de Salarios 2025", subtitulo: "Descubre cuánto ganarías en 50 países", labelSalario: "💵 Salario Bruto Anual (USD):", labelProfesion: "💼 Profesión:", labelMoneda: "💱 Ver resultados en:", btn: "🔍 Calcular Mi Salario en 50 Países", resultsTitle: "📊 Tus Resultados Personalizados" },
+    en: { titulo: "💰 Global Salary Calculator 2025", subtitulo: "Discover how much you'd earn in 50 countries", labelSalario: "💵 Annual Gross Salary (USD):", labelProfesion: "💼 Profession:", labelMoneda: "💱 Show results in:", btn: "🔍 Calculate in 50 Countries", resultsTitle: "📊 Your Personalized Results" },
+    fr: { titulo: "💰 Calculateur de Salaires 2025", subtitulo: "Découvrez combien vous gagneriez dans 50 pays", labelSalario: "💵 Salaire Brut Annuel (USD):", labelProfesion: "💼 Profession:", labelMoneda: "💱 Afficher en:", btn: "🔍 Calculer dans 50 Pays", resultsTitle: "📊 Vos Résultats" },
+    de: { titulo: "💰 Globaler Gehaltsrechner 2025", subtitulo: "Entdecken Sie Ihr Gehalt in 50 Ländern", labelSalario: "💵 Jahresbruttogehalt (USD):", labelProfesion: "💼 Beruf:", labelMoneda: "💱 Ergebnisse in:", btn: "🔍 In 50 Ländern berechnen", resultsTitle: "📊 Ihre Ergebnisse" },
+    pt: { titulo: "💰 Calculadora Global de Salários 2025", subtitulo: "Descubra quanto ganharia em 50 países", labelSalario: "💵 Salário Bruto Anual (USD):", labelProfesion: "💼 Profissão:", labelMoneda: "💱 Ver em:", btn: "🔍 Calcular em 50 Países", resultsTitle: "📊 Seus Resultados" }
+  };
+  const s = t[lang] || t.es;
+  document.getElementById('titulo').textContent = s.titulo;
+  document.getElementById('subtitulo').textContent = s.subtitulo;
+  document.getElementById('label-salario').textContent = s.labelSalario;
+  document.getElementById('label-profesion').textContent = s.labelProfesion;
+  document.getElementById('label-moneda').textContent = s.labelMoneda;
+  document.getElementById('btn-calcular').textContent = s.btn;
+  document.getElementById('results-title').textContent = s.resultsTitle;
+}
+</script>
+
+</body>
+</html>
